@@ -225,13 +225,3 @@ else:
     ])
 
 navigation.run()
-
-from database import fetch_all
-
-users = fetch_all("SELECT * FROM users")
-
-st.dataframe(users)
-
-import streamlit as st
-
-st.write(st.__version__)

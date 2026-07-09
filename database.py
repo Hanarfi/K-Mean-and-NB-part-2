@@ -2,7 +2,7 @@
 # DATABASE SQLITE
 # Sistem Analisis Data Pasien Rawat Inap Anak
 # ==========================================================
-import hashlib
+
 import sqlite3
 from config import DATABASE_NAME
 
@@ -180,57 +180,6 @@ def create_tables():
 
     print("Database berhasil dibuat.")
 
-# ==========================================================
-# MEMBUAT ADMIN DEFAULT
-# ==========================================================
-
-def create_default_admin():
-
-    conn = get_connection()
-    cursor = conn.cursor()
-
-    cursor.execute("""
-        SELECT *
-        FROM users
-        WHERE username=?
-    """, ("admin",))
-
-    admin = cursor.fetchone()
-
-    if admin is None:
-
-        password = hashlib.sha256(
-            "admin123".encode()
-        ).hexdigest()
-
-        cursor.execute("""
-            INSERT INTO users
-            (
-                nama,
-                username,
-                email,
-                password,
-                role
-            )
-            VALUES
-            (?, ?, ?, ?, ?)
-        """, (
-
-            "Administrator",
-
-            "admin",
-
-            "admin@gmail.com",
-
-            password,
-
-            "Admin"
-
-        ))
-
-        conn.commit()
-
-    conn.close()
 
 
 # ==========================================================

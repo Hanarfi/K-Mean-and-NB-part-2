@@ -7,7 +7,10 @@ import os
 import streamlit as st
 
 from config import APP_NAME, ASSET_FOLDER
-from database import create_tables
+from database import (
+    create_tables,
+    create_default_admin
+)
 
 
 # ==========================================================
@@ -27,7 +30,7 @@ st.set_page_config(
 # ==========================================================
 
 create_tables()
-
+create_default_admin()
 
 # ==========================================================
 # LOAD CSS

@@ -21,7 +21,6 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-
 # ==========================================================
 # MEMBUAT DATABASE
 # ==========================================================
@@ -48,17 +47,17 @@ def load_css():
                 unsafe_allow_html=True
             )
 
-
 load_css()
 
-
 # ==========================================================
-# SESSION
+# SESSION DEFAULT
 # ==========================================================
 
 DEFAULT_SESSION = {
 
     "logged_in": False,
+
+    "show_register": False,
 
     "user_id": None,
 
@@ -78,40 +77,152 @@ for key, value in DEFAULT_SESSION.items():
 
 
 # ==========================================================
-# HALAMAN
-# ==========================================================
-
-login_page = st.Page(
-    "auth/login.py",
-    title="Login",
-    icon="🔐",
-    default=True
-)
-
-register_page = st.Page(
-    "auth/register.py",
-    title="Register",
-    icon="📝"
-)
-
-
-# ==========================================================
-# NAVIGASI
+# BELUM LOGIN
 # ==========================================================
 
 if not st.session_state.logged_in:
 
+    # Menyembunyikan sidebar
+    st.markdown("""
+        <style>
+            section[data-testid="stSidebar"]{
+                display:none;
+            }
+
+            div[data-testid="collapsedControl"]{
+                display:none;
+            }
+        </style>
+    """, unsafe_allow_html=True)
+
+    if st.session_state.show_register:
+
+        from auth.register import register_page
+
+        register_page()
+
+    else:
+
+        from auth.login import login_page
+
+        login_page()
+
+    st.stop()
+
+
+# ==========================================================
+# SUDAH LOGIN
+# ==========================================================
+
+# Halaman User
+dashboard = st.Page(
+    "pages/dashboard.py",
+    title="Dashboard",
+    icon="🏠",
+    default=True
+)
+
+dataset = st.Page(
+    "pages/dataset.py",
+    title="Dataset Saya",
+    icon="📁"
+)
+
+kmeans = st.Page(
+    "pages/kmeans.py",
+    title="K-Means",
+    icon="📊"
+)
+
+naive = st.Page(
+    "pages/naive_bayes.py",
+    title="Naive Bayes",
+    icon="🧠"
+)
+
+evaluasi = st.Page(
+    "pages/evaluasi.py",
+    title="Uji Model",
+    icon="📈"
+)
+
+riwayat = st.Page(
+    "pages/riwayat.py",
+    title="Riwayat",
+    icon="🕒"
+)
+
+laporan = st.Page(
+    "pages/laporan.py",
+    title="Laporan",
+    icon="📄"
+)
+
+profil = st.Page(
+    "pages/profile.py",
+    title="Profil",
+    icon="👤"
+)
+
+
+# ==========================================================
+# NAVIGASI BERDASARKAN ROLE
+# ==========================================================
+
+if st.session_state.role == "Admin":
+
+    admin_user = st.Page(
+        "pages/admin_user.py",
+        title="Manajemen User",
+        icon="👥"
+    )
+
+    admin_dataset = st.Page(
+        "pages/admin_dataset.py",
+        title="Semua Dataset",
+        icon="🗂️"
+    )
+
     navigation = st.navigation([
-        login_page,
-        register_page
+        dashboard,
+        dataset,
+        kmeans,
+        naive,
+        evaluasi,
+        riwayat,
+        laporan,
+        admin_user,
+        admin_dataset,
+        profil
+    ])
+
+elif st.session_state.role == "Pimpinan":
+
+    hasil = st.Page(
+        "pages/hasil_analisis.py",
+        title="Hasil Analisis",
+        icon="📊"
+    )
+
+    navigation = st.navigation([
+        dashboard,
+        hasil,
+        laporan,
+        profil
     ])
 
 else:
 
-    st.write("Dashboard akan dibuat pada tahap berikutnya.")
-
-    st.stop()
-
+    navigation = st.navigation([
+        dashboard,
+        dataset,
+        kmeans,
+        naive,
+        evaluasi,
+        riwayat,
+        laporan,
+        profil
+    ])
 
 navigation.run()
 

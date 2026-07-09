@@ -82,14 +82,14 @@ for key, value in DEFAULT_SESSION.items():
 # ==========================================================
 
 login_page = st.Page(
-    "pages/login.py",
+    "auth/login.py",
     title="Login",
     icon="🔐",
     default=True
 )
 
 register_page = st.Page(
-    "pages/register.py",
+    "auth/register.py",
     title="Register",
     icon="📝"
 )

@@ -44,13 +44,13 @@ if "role" not in st.session_state:
 # ==========================================================
 # FUNGSI MEMUAT CSS
 # ==========================================================
-
+from config import ASSET_FOLDER
+import os
 def load_css():
+    css_path = os.path.join(ASSET_FOLDER, "style.css")
 
-    try:
-
-        with open("style.css") as f:
-
+    if os.path.exists(css_path):
+        with open(css_path, encoding="utf-8") as f:
             st.markdown(
                 f"<style>{f.read()}</style>",
                 unsafe_allow_html=True

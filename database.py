@@ -179,3 +179,102 @@ def create_tables():
     conn.close()
 
     print("Database berhasil dibuat.")
+
+
+# ==========================================================
+# FUNGSI DASAR DATABASE
+# ==========================================================
+
+def execute_query(query, params=()):
+    """
+    Menjalankan query INSERT, UPDATE, DELETE.
+    """
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute(query, params)
+
+    conn.commit()
+    conn.close()
+
+
+def fetch_one(query, params=()):
+    """
+    Mengambil satu data.
+    """
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute(query, params)
+
+    data = cursor.fetchone()
+
+    conn.close()
+
+    return data
+
+
+def fetch_all(query, params=()):
+    """
+    Mengambil banyak data.
+    """
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute(query, params)
+
+    data = cursor.fetchall()
+
+    conn.close()
+
+    return data
+
+
+def insert(table, data):
+    """
+    Menambahkan data ke database.
+    """
+
+    columns = ", ".join(data.keys())
+    placeholders = ", ".join(["?"] * len(data))
+
+    query = f"""
+        INSERT INTO {table}
+        ({columns})
+        VALUES
+        ({placeholders})
+    """
+
+    execute_query(query, tuple(data.values()))
+
+
+def update(table, data, condition, params):
+    """
+    Mengubah data.
+    """
+
+    columns = ", ".join([f"{key}=?" for key in data.keys()])
+
+    query = f"""
+        UPDATE {table}
+        SET {columns}
+        WHERE {condition}
+    """
+
+    execute_query(
+        query,
+        tuple(data.values()) + tuple(params)
+    )
+
+
+def delete(table, condition, params):
+    """
+    Menghapus data.
+    """
+
+    query = f"""
+        DELETE FROM {table}
+        WHERE {condition}
+    """
+
+    execute_query(query, params)

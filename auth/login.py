@@ -4,24 +4,33 @@ from config import APP_NAME
 from config import LOGO
 
 
-# ======================================================
+# ==========================================================
 # HEADER
-# ======================================================
+# ==========================================================
 
-col1, col2, col3 = st.columns([1,2,1])
+left, center, right = st.columns([1, 2, 1])
 
-with col2:
+with center:
 
-    if LOGO:
-        st.image(LOGO, width=180)
+    st.write("")
+
+    st.image(LOGO, width=140)
 
     st.markdown(
-        f"<h2 style='text-align:center;'>{APP_NAME}</h2>",
+        f"""
+        <h2 style="text-align:center;">
+            {APP_NAME}
+        </h2>
+        """,
         unsafe_allow_html=True
     )
 
     st.markdown(
-        "<p style='text-align:center;'>Silakan login untuk melanjutkan.</p>",
+        """
+        <p style="text-align:center;color:gray;">
+            Silakan login untuk melanjutkan
+        </p>
+        """,
         unsafe_allow_html=True
     )
 
@@ -40,16 +49,19 @@ with col2:
 
     st.write("")
 
-    login_btn = st.button(
+    login_button = st.button(
         "🔐 Login",
         use_container_width=True
     )
 
     st.write("")
 
-    st.caption("Belum memiliki akun?")
+    st.markdown(
+        "<p style='text-align:center;'>Belum memiliki akun?</p>",
+        unsafe_allow_html=True
+    )
 
-    register_btn = st.button(
+    register_button = st.button(
         "📝 Register",
         use_container_width=True
     )

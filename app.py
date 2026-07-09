@@ -9,7 +9,6 @@ import streamlit as st
 from config import APP_NAME, ASSET_FOLDER
 from database import create_tables
 
-
 # ==========================================================
 # KONFIGURASI HALAMAN
 # ==========================================================
@@ -32,16 +31,10 @@ create_tables()
 # ==========================================================
 
 def load_css():
-
-    css_path = os.path.join(
-        ASSET_FOLDER,
-        "style.css"
-    )
+    css_path = os.path.join(ASSET_FOLDER, "style.css")
 
     if os.path.exists(css_path):
-
         with open(css_path, encoding="utf-8") as css:
-
             st.markdown(
                 f"<style>{css.read()}</style>",
                 unsafe_allow_html=True
@@ -54,177 +47,165 @@ load_css()
 # ==========================================================
 
 DEFAULT_SESSION = {
-
     "logged_in": False,
-
-    "show_register": False,
-
     "user_id": None,
-
     "username": None,
-
     "nama": None,
-
     "role": None
-
 }
 
 for key, value in DEFAULT_SESSION.items():
-
     if key not in st.session_state:
-
         st.session_state[key] = value
 
-
 # ==========================================================
-# BELUM LOGIN
-# ==========================================================
-
-if not st.session_state.logged_in:
-
-    # Menyembunyikan sidebar
-    st.markdown("""
-        <style>
-            section[data-testid="stSidebar"]{
-                display:none;
-            }
-
-            div[data-testid="collapsedControl"]{
-                display:none;
-            }
-        </style>
-    """, unsafe_allow_html=True)
-
-    if st.session_state.show_register:
-
-        from auth.register import register_page
-
-        register_page()
-
-    else:
-
-        from auth.login import login_page
-
-        login_page()
-
-    st.stop()
-
-
-# ==========================================================
-# SUDAH LOGIN
+# HALAMAN AUTENTIKASI
 # ==========================================================
 
-# Halaman User
-dashboard = st.Page(
+login_page = st.Page(
+    "auth/login.py",
+    title="Login",
+    icon="🔐",
+    default=True
+)
+
+register_page = st.Page(
+    "auth/register.py",
+    title="Register",
+    icon="📝"
+)
+
+# ==========================================================
+# HALAMAN USER
+# ==========================================================
+
+dashboard_page = st.Page(
     "pages/dashboard.py",
     title="Dashboard",
     icon="🏠",
     default=True
 )
 
-dataset = st.Page(
+dataset_page = st.Page(
     "pages/dataset.py",
     title="Dataset Saya",
     icon="📁"
 )
 
-kmeans = st.Page(
+kmeans_page = st.Page(
     "pages/kmeans.py",
     title="K-Means",
     icon="📊"
 )
 
-naive = st.Page(
+naive_bayes_page = st.Page(
     "pages/naive_bayes.py",
     title="Naive Bayes",
     icon="🧠"
 )
 
-evaluasi = st.Page(
+evaluasi_page = st.Page(
     "pages/evaluasi.py",
     title="Uji Model",
     icon="📈"
 )
 
-riwayat = st.Page(
+riwayat_page = st.Page(
     "pages/riwayat.py",
     title="Riwayat",
     icon="🕒"
 )
 
-laporan = st.Page(
+laporan_page = st.Page(
     "pages/laporan.py",
     title="Laporan",
     icon="📄"
 )
 
-profil = st.Page(
+profil_page = st.Page(
     "pages/profile.py",
     title="Profil",
     icon="👤"
 )
 
+# ==========================================================
+# HALAMAN ADMIN
+# ==========================================================
+
+admin_user_page = st.Page(
+    "pages/admin_user.py",
+    title="Manajemen User",
+    icon="👥"
+)
+
+admin_dataset_page = st.Page(
+    "pages/admin_dataset.py",
+    title="Semua Dataset",
+    icon="🗂️"
+)
 
 # ==========================================================
-# NAVIGASI BERDASARKAN ROLE
+# HALAMAN PIMPINAN
 # ==========================================================
 
-if st.session_state.role == "Admin":
+hasil_analisis_page = st.Page(
+    "pages/hasil_analisis.py",
+    title="Hasil Analisis",
+    icon="📊"
+)
 
-    admin_user = st.Page(
-        "pages/admin_user.py",
-        title="Manajemen User",
-        icon="👥"
+# ==========================================================
+# NAVIGASI
+# ==========================================================
+
+if not st.session_state.logged_in:
+
+    navigation = st.navigation(
+        [login_page, register_page],
+        position="hidden"
     )
 
-    admin_dataset = st.Page(
-        "pages/admin_dataset.py",
-        title="Semua Dataset",
-        icon="🗂️"
-    )
+elif st.session_state.role == "Admin":
 
     navigation = st.navigation([
-        dashboard,
-        dataset,
-        kmeans,
-        naive,
-        evaluasi,
-        riwayat,
-        laporan,
-        admin_user,
-        admin_dataset,
-        profil
+        dashboard_page,
+        dataset_page,
+        kmeans_page,
+        naive_bayes_page,
+        evaluasi_page,
+        riwayat_page,
+        laporan_page,
+        admin_user_page,
+        admin_dataset_page,
+        profil_page
     ])
 
 elif st.session_state.role == "Pimpinan":
 
-    hasil = st.Page(
-        "pages/hasil_analisis.py",
-        title="Hasil Analisis",
-        icon="📊"
-    )
-
     navigation = st.navigation([
-        dashboard,
-        hasil,
-        laporan,
-        profil
+        dashboard_page,
+        hasil_analisis_page,
+        laporan_page,
+        profil_page
     ])
 
 else:
 
     navigation = st.navigation([
-        dashboard,
-        dataset,
-        kmeans,
-        naive,
-        evaluasi,
-        riwayat,
-        laporan,
-        profil
+        dashboard_page,
+        dataset_page,
+        kmeans_page,
+        naive_bayes_page,
+        evaluasi_page,
+        riwayat_page,
+        laporan_page,
+        profil_page
     ])
 
 navigation.run()
+
+
+
 from database import fetch_all
 
 users = fetch_all("SELECT * FROM users")

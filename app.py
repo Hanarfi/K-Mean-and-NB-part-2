@@ -1,10 +1,12 @@
 # ==========================================================
 # SISTEM ANALISIS DATA PASIEN RAWAT INAP ANAK
+# APP.PY
 # ==========================================================
 
+import os
 import streamlit as st
 
-from config import APP_NAME
+from config import APP_NAME, ASSET_FOLDER
 from database import create_tables
 
 
@@ -28,42 +30,88 @@ create_tables()
 
 
 # ==========================================================
-# SESSION
+# LOAD CSS
 # ==========================================================
 
-if "login" not in st.session_state:
-    st.session_state.login = False
-
-if "user" not in st.session_state:
-    st.session_state.user = None
-
-if "role" not in st.session_state:
-    st.session_state.role = None
-
-
-# ==========================================================
-# FUNGSI MEMUAT CSS
-# ==========================================================
-from config import ASSET_FOLDER
-import os
 def load_css():
-    css_path = os.path.join(ASSET_FOLDER, "style.css")
+
+    css_path = os.path.join(
+        ASSET_FOLDER,
+        "style.css"
+    )
 
     if os.path.exists(css_path):
-        with open(css_path, encoding="utf-8") as f:
+
+        with open(css_path, encoding="utf-8") as css:
+
             st.markdown(
-                f"<style>{f.read()}</style>",
+                f"<style>{css.read()}</style>",
                 unsafe_allow_html=True
             )
+
+
 load_css()
 
 
 # ==========================================================
-# HALAMAN SEMENTARA
+# SESSION
 # ==========================================================
 
-st.title(APP_NAME)
+DEFAULT_SESSION = {
 
-st.info("🚧 Sistem sedang dalam tahap pengembangan.")
+    "logged_in": False,
 
-st.write("Tahap berikutnya: Login")
+    "user_id": None,
+
+    "username": None,
+
+    "nama": None,
+
+    "role": None
+
+}
+
+for key, value in DEFAULT_SESSION.items():
+
+    if key not in st.session_state:
+
+        st.session_state[key] = value
+
+
+# ==========================================================
+# HALAMAN
+# ==========================================================
+
+login_page = st.Page(
+    "pages/login.py",
+    title="Login",
+    icon="🔐",
+    default=True
+)
+
+register_page = st.Page(
+    "pages/register.py",
+    title="Register",
+    icon="📝"
+)
+
+
+# ==========================================================
+# NAVIGASI
+# ==========================================================
+
+if not st.session_state.logged_in:
+
+    navigation = st.navigation([
+        login_page,
+        register_page
+    ])
+
+else:
+
+    st.write("Dashboard akan dibuat pada tahap berikutnya.")
+
+    st.stop()
+
+
+navigation.run()

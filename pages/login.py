@@ -1,35 +1,31 @@
-import os
 import streamlit as st
 
-from config import APP_NAME, HOSPITAL_NAME, ASSET_FOLDER
+from config import APP_NAME
+from config import LOGO
 
 
-# ==========================================================
-# LOGO
-# ==========================================================
+# ======================================================
+# HEADER
+# ======================================================
 
-logo_path = os.path.join(
-    ASSET_FOLDER,
-    "logo.png"
-)
-
-
-# ==========================================================
-# LAYOUT
-# ==========================================================
-
-col1, col2, col3 = st.columns([1, 2, 1])
+col1, col2, col3 = st.columns([1,2,1])
 
 with col2:
 
-    if os.path.exists(logo_path):
-        st.image(logo_path, width=180)
+    if LOGO:
+        st.image(LOGO, width=180)
 
-    st.markdown(f"## {APP_NAME}")
+    st.markdown(
+        f"<h2 style='text-align:center;'>{APP_NAME}</h2>",
+        unsafe_allow_html=True
+    )
 
-    st.caption(HOSPITAL_NAME)
+    st.markdown(
+        "<p style='text-align:center;'>Silakan login untuk melanjutkan.</p>",
+        unsafe_allow_html=True
+    )
 
-    st.divider()
+    st.write("")
 
     username = st.text_input(
         "Username",
@@ -42,16 +38,18 @@ with col2:
         placeholder="Masukkan password"
     )
 
-    login = st.button(
+    st.write("")
+
+    login_btn = st.button(
         "🔐 Login",
         use_container_width=True
     )
 
-    st.divider()
+    st.write("")
 
-    st.write("Belum memiliki akun?")
+    st.caption("Belum memiliki akun?")
 
-    st.page_link(
-        "pages/register.py",
-        label="Daftar di sini"
+    register_btn = st.button(
+        "📝 Register",
+        use_container_width=True
     )

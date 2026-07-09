@@ -1,94 +1,57 @@
+import os
 import streamlit as st
-import hashlib
 
-from database import fetch_one
-from config import APP_NAME
+from config import APP_NAME, HOSPITAL_NAME, ASSET_FOLDER
 
 
 # ==========================================================
-# HASH PASSWORD
+# LOGO
 # ==========================================================
 
-def hash_password(password):
-    return hashlib.sha256(password.encode()).hexdigest()
-
-
-# ==========================================================
-# JIKA SUDAH LOGIN
-# ==========================================================
-
-if st.session_state.get("logged_in", False):
-    st.switch_page("app.py")
-
-
-# ==========================================================
-# TAMPILAN LOGIN
-# ==========================================================
-
-st.title("🏥 " + APP_NAME)
-
-st.subheader("Login")
-
-username = st.text_input(
-    "Username"
-)
-
-password = st.text_input(
-    "Password",
-    type="password"
-)
-
-login = st.button(
-    "Login",
-    use_container_width=True
+logo_path = os.path.join(
+    ASSET_FOLDER,
+    "logo.png"
 )
 
 
 # ==========================================================
-# PROSES LOGIN
+# LAYOUT
 # ==========================================================
 
-if login:
+col1, col2, col3 = st.columns([1, 2, 1])
 
-    if username == "" or password == "":
+with col2:
 
-        st.warning("Username dan Password wajib diisi.")
+    if os.path.exists(logo_path):
+        st.image(logo_path, width=180)
 
-    else:
+    st.markdown(f"## {APP_NAME}")
 
-        password_hash = hash_password(password)
+    st.caption(HOSPITAL_NAME)
 
-        user = fetch_one(
-            """
-            SELECT *
-            FROM users
-            WHERE username=?
-            AND password=?
-            """,
-            (
-                username,
-                password_hash
-            )
-        )
+    st.divider()
 
-        if user:
+    username = st.text_input(
+        "Username",
+        placeholder="Masukkan username"
+    )
 
-            st.session_state.logged_in = True
+    password = st.text_input(
+        "Password",
+        type="password",
+        placeholder="Masukkan password"
+    )
 
-            st.session_state.user_id = user["id_user"]
+    login = st.button(
+        "🔐 Login",
+        use_container_width=True
+    )
 
-            st.session_state.username = user["username"]
+    st.divider()
 
-            st.session_state.nama = user["nama"]
+    st.write("Belum memiliki akun?")
 
-            st.session_state.role = user["role"]
-
-            st.success("Login berhasil.")
-
-            st.rerun()
-
-        else:
-
-            st.error(
-                "Username atau Password salah."
-            )
+    st.page_link(
+        "pages/register.py",
+        label="Daftar di sini"
+    )
